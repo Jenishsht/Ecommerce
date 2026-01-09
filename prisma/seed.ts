@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import 'dotenv/config';  //toensure the.env file is import 
-import { PrismaClient } from '../app/generated/prisma/client'; 
-import { Product } from '@/app/generated/prisma/browser';
+// import { PrismaClient } from '../app/generated/prisma/client'; 
+// import { Product } from '@prisma/client';
+import { PrismaClient, Product } from '@prisma/client';
+
 const prisma = new PrismaClient();
 
 async function main() {
@@ -37,7 +39,7 @@ async function main() {
     });
 
 
-     const Products: Product[]=[
+     const products: Product[]=[
     
         {
           id: "1",
@@ -46,7 +48,9 @@ async function main() {
           price: 199.9,
           image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=1600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aGVhZHBob25lfGVufDB8fDB8fHww",
           catagoryId: electronics.id,
-          slug: 'Wireless-headphone'
+          slug: 'Wireless-headphone',
+          inventory: 15,
+          
         },
         {
             id :"2",
@@ -56,16 +60,19 @@ async function main() {
             image: "https://images.unsplash.com/photo-1617043983671-adaadcaa2460?w=1600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8c21hcnQlMjB3YXRjaHxlbnwwfHwwfHx8MA%3D%3D",
             catagoryId: electronics.id,
             slug: 'smart-watch',
+            inventory: 10,
+       
     
         },
         {
-            id :"3",
+            id: "3",
             name: "Running Shoes",
             description: " Lightweight running shoes with responseive cushioning.",
             price: 89.9,
             image: "https://images.unsplash.com/photo-1562183241-b937e95585b6?w=1600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cnVubmluZyUyMHNob2VzfGVufDB8fDB8fHww",
             catagoryId: sport.id,
             slug: 'running-shoes',
+            inventory: 3,
             
         },
         {
@@ -75,7 +82,8 @@ async function main() {
             price: 24.9,
             image: "https://images.unsplash.com/photo-1666445844615-0a3930270f13?w=1600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Q2VyYW1pYyUyMG11Z3xlbnwwfHwwfHx8MA%3D%3D",
             catagoryId: home.id,
-            slug: 'Ceramic-mug'
+            slug: 'Ceramic-mug',
+            inventory: 0,
             
         },
         {
@@ -85,11 +93,12 @@ async function main() {
             price: 79.9,
             image: "https://images.unsplash.com/photo-1592289924034-c423dd2f1c5d?w=1600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8TGVhZGVyJTIwQmFja3BhY2t8ZW58MHx8MHx8fDA%3D",
             catagoryId: clothing.id,
-            slug: 'Leader-backpack'
+            slug: 'Leader-backpack',
+            inventory:  1,
             
         }
     ];
-    for (const product of Products){
+    for (const product of products){
       await prisma.product.create({
         data :product,
         

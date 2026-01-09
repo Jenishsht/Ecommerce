@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
+import { ThemeProvider } from "next-themes";
 
 
 const geistSans = Geist({
@@ -25,11 +26,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-          <header className="fixed top-0 z-50 w-full bg-gradient-to-r from-blue-600 to-purple-600 shadow-md">
+        <ThemeProvider 
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange>
+        <header className="fixed top-0 z-50 w-full bg-gradient-to-r from-blue-600 to-purple-600 shadow-md">
         <div className="flex items-center gap-6 px-10 py-3 mx-auto text-white">
           
           {/* Logo */}
@@ -57,10 +63,12 @@ export default function RootLayout({
             <Link href="/">Home</Link>
             <Link href="/products">Product</Link>
             <Link href="">Category</Link>
+
           </nav>
         </div>
       </header>
         {children}
+        </ThemeProvider>
       </body>
     </html>
   );
