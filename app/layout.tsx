@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
 import { ThemeProvider } from "next-themes";
+import { ModeToggle } from "@/components/theme-toggle";
 
 
 const geistSans = Geist({
@@ -27,15 +28,63 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var theme = localStorage.getItem('theme') || 'dark';
+                  var html = document.documentElement;
+                  // Remove any previous theme classes
+                  var themes = ${JSON.stringify([
+                    "light",
+                    "dark",
+                    "cupcake",
+                    "bumblebee",
+                    "emerald",
+                    "corporate",
+                    "synthwave",
+                    "retro",
+                    "cyberpunk",
+                    "valentine",
+                    "halloween",
+                    "garden",
+                    "forest",
+                    "aqua",
+                    "lofi",
+                    "pastel",
+                    "fantasy",
+                    "wireframe",
+                    "black",
+                    "luxury",
+                    "dracula",
+                  ])};
+                  html.classList.remove('dark');
+                  themes.forEach(t => html.classList.remove('theme-' + t));
+
+                  if(theme === 'dark') {
+                    html.classList.add('dark');
+                  } else {
+                    html.classList.add('theme-' + theme);
+                  }
+                } catch(e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider 
-            attribute="class"
+             attribute="class"
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange>
-        <header className="fixed top-0 z-50 w-full bg-gradient-to-r from-blue-600 to-purple-600 shadow-md">
+
+        <header className="fixed top-0 z-50 w-full shadow-md" 
+          >
         <div className="flex items-center gap-6 px-10 py-3 mx-auto text-white">
           
           {/* Logo */}
@@ -63,11 +112,18 @@ export default function RootLayout({
             <Link href="/">Home</Link>
             <Link href="/products">Product</Link>
             <Link href="">Category</Link>
+            
+            <div>
+                 <ModeToggle/>
+            </div>
 
           </nav>
         </div>
+       
       </header>
-        {children}
+
+     <main className="pt-24">{children}</main>
+          
         </ThemeProvider>
       </body>
     </html>

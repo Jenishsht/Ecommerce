@@ -36,6 +36,7 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --header-gradient: linear-gradient(to right, #3b82f6, #8b5cf6); /* default */
 }
 
 @theme inline {
@@ -127,6 +128,197 @@ body {
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
 }
+.theme-light {
+  --background: #ffffff;
+  --foreground: #000000;
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+  --header-gradient: linear-gradient(to right, #3b82f6, #8b5cf6);
+}
+
+/* Dark theme */
+.theme-dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --primary: #111827;
+  --primary-foreground: #ffffff;
+  --header-gradient: linear-gradient(to right, #111827, #1f2937);
+}
+
+.theme-cupcake {
+  --background: #fff0f5;
+  --foreground: #333;
+  --primary: #ff66b2;
+  --primary-foreground: #fff;
+  --header-gradient: linear-gradient(to right, #ff66b2, #ff99c8);
+}
+
+.theme-bumblebee {
+  --background: #fff9e5;
+  --foreground: #333;
+  --primary: #fbbf24;
+  --primary-foreground: #000;
+  --header-gradient: linear-gradient(to right, #fbbf24, #fcd34d);
+}
+
+
+.theme-emerald {
+  --background: #eafaf1;
+  --foreground: #065f46;
+  --primary: #10b981;
+  --primary-foreground: #fff;
+  --header-gradient: linear-gradient(to right, #10b981, #34d399);
+}
+
+.theme-corporate {
+  --background: #f5f5f5;
+  --foreground: #111;
+  --primary: #0ea5e9;
+  --primary-foreground: #fff;
+  --header-gradient: linear-gradient(to right, #0ea5e9, #3b82f6);
+}
+
+/* Synthwave theme */
+.theme-synthwave {
+  --background: #2d022d;
+  --foreground: #f0f0f0;
+  --primary: #ff00ff;
+  --primary-foreground: #fff;
+  --header-gradient: linear-gradient(to right, #ff00ff, #ff79c6);
+}
+
+/* Retro theme */
+.theme-retro {
+  --background: #fef5e7;
+  --foreground: #333;
+  --primary: #f97316;
+  --primary-foreground: #fff;
+  --header-gradient: linear-gradient(to right, #f97316, #fb923c);
+}
+
+/* Cyberpunk theme */
+.theme-cyberpunk {
+  --background: #0f0f0f;
+  --foreground: #f0f0f0;
+  --primary: #ff007f;
+  --primary-foreground: #fff;
+  --header-gradient: linear-gradient(to right, #ff007f, #ff2d55);
+}
+
+/* Valentine theme */
+.theme-valentine {
+  --background: #ffeef0;
+  --foreground: #6b0b23;
+  --primary: #ff2d55;
+  --primary-foreground: #fff;
+  --header-gradient: linear-gradient(to right, #ff2d55, #ff79c6);
+}
+
+/* Halloween theme */
+.theme-halloween {
+  --background: #1a1a1a;
+  --foreground: #f97316;
+  --primary: #f97316;
+  --primary-foreground: #000;
+  --header-gradient: linear-gradient(to right, #f97316, #ff6a00);
+}
+
+/* Garden theme */
+.theme-garden {
+  --background: #e5f7e0;
+  --foreground: #065f46;
+  --primary: #10b981;
+  --primary-foreground: #fff;
+  --header-gradient: linear-gradient(to right, #10b981, #34d399);
+}
+
+/* Forest theme */
+.theme-forest {
+  --background: #0b3d0b;
+  --foreground: #d4f1d4;
+  --primary: #228b22;
+  --primary-foreground: #fff;
+  --header-gradient: linear-gradient(to right, #228b22, #6aa84f);
+  --header-foreground: #d4f1d4; 
+}
+
+/* Aqua theme */
+.theme-aqua {
+  --background: #e0f7fa;
+  --foreground: #006064;
+  --primary: #00acc1;
+  --primary-foreground: #fff;
+  --header-gradient: linear-gradient(to right, #00acc1, #26c6da);
+}
+
+/* Lofi theme */
+.theme-lofi {
+  --background: #fdf6e3;
+  --foreground: #657b83;
+  --primary: #b58900;
+  --primary-foreground: #fff;
+  --header-gradient: linear-gradient(to right, #b58900, #f0a500);
+}
+
+/* Pastel theme */
+.theme-pastel {
+  --background: #fef6ff;
+  --foreground: #333;
+  --primary: #d8b4fe;
+  --primary-foreground: #fff;
+  --header-gradient: linear-gradient(to right, #d8b4fe, #f0abfc);
+}
+
+/* Fantasy theme */
+.theme-fantasy {
+  --background: #f0f0ff;
+  --foreground: #333;
+  --primary: #7f5af0;
+  --primary-foreground: #fff;
+  --header-gradient: linear-gradient(to right, #7f5af0, #a78bfa);
+}
+
+/* Wireframe theme */
+.theme-wireframe {
+  --background: #e0e0e0;
+  --foreground: #333;
+  --primary: #999;
+  --primary-foreground: #fff;
+  --header-gradient: linear-gradient(to right, #999, #ccc);
+}
+
+/* Black theme */
+.theme-black {
+  --background: #000;
+  --foreground: #fff;
+  --primary: #444;
+  --primary-foreground: #fff;
+  --header-gradient: linear-gradient(to right, #000, #222);
+}
+
+/* Luxury theme */
+.theme-luxury {
+  --background: #fefcf5;
+  --foreground: #3f3f3f;
+  --primary: #d97706;
+  --primary-foreground: #fff;
+  --header-gradient: linear-gradient(to right, #d97706, #fbbf24);
+}
+
+/* Dracula theme */
+.theme-dracula {
+  --background: #282a36;
+  --foreground: #f8f8f2;
+  --primary: #6272a4;
+  --primary-foreground: #fff;
+  --header-gradient: linear-gradient(to right, #6272a4, #ff79c6);
+}
+
+header {
+  background: var(--header-gradient);
+  color: var(--header-foreground, var(--primary-foreground)); /* fallback to primary-foreground if not defined */
+}
+
 
 @layer base {
   * {
