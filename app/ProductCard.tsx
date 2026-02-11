@@ -9,7 +9,7 @@ import Link from "next/link";
 
     return(
            <Link href={`/product/${product.slug}`}>
-                <Card className=" pt-0 " >
+                <Card className=" pt-0 overflow-hidden  min-h-100" >
                 <div className="relative aspect-video rounded-xl overflow-hidden mb-4">
                     {product.image && (  
                 <Image 

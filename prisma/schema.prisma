@@ -26,6 +26,7 @@ model Product {
   catagory      Catagory @relation(fields: [catagoryId],references: [id])
   catagoryId    String
   inventory     Int   @default(0)
+  cartItem      CartItem[]
 
 
 
@@ -38,3 +39,30 @@ model Catagory {
   products  Product[]
 }
 
+model Cart {
+
+  id          String @id @default(cuid())
+  items       CartItem[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+}
+
+model CartItem {
+
+  id        String @id @default(cuid())
+  cart      Cart   @relation(fields:[cartId],references: [id])
+  cartId    String
+  product   Product @relation(fields :[productId], references:[id])
+  productId String
+  quantity  Int @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([cartId,productId])
+  @@index(cartId)
+  @@index([productId])
+
+
+
+}

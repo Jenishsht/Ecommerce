@@ -1,3 +1,4 @@
+import { BreadcrumbsSkeleton } from "@/components/Breadcrumbs-skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -8,7 +9,8 @@ export default async function Loading(){
    
     return(
       <main className="container mx-auto px-6 pt-24 pb-16">
-        <Card className="mx-auto max-w-4xl border shadow-sm">
+        <BreadcrumbsSkeleton/>
+        <Card>
           <CardContent className="p-8">
            <Skeleton className="h-10 w-3/4 "/>
 

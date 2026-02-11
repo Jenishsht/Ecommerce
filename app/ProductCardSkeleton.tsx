@@ -4,7 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
  export function ProductCardSkeleton ( ){
 
     return(
-            <Card className=" pt-0 overflow-hidden ">
+            <Card className=" pt-0 overflow-hidden  min-h-100">
             <div className="relative aspect-video rounded-xl overflow-hidden mb-4">
              <Skeleton className="w-full h-full"></Skeleton>
             </div>
@@ -15,7 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton";
             </CardHeader>
             <CardFooter className="flex justify-between items-center">
                 <Skeleton className="h-6 w-24"></Skeleton>
-                <Skeleton className="h-5 w-20"></Skeleton>
+                <Skeleton className="h-6 w-20"></Skeleton>
                 
             </CardFooter>
          

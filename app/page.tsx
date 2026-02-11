@@ -1,4 +1,3 @@
-import { ProductCard } from "./ProductCard";
 import { prisma } from "@/lib/prisma"; 
 
 import {
@@ -11,38 +10,20 @@ import {
 } from "@/components/ui/pagination"
 import { Suspense } from "react";
 import ProductsSkeleton from "./ProductsSkeleton";
-import { sleep } from "@/lib/utils";
+
+import { Breadcrumbs } from "@/components/breadcrumbs";
+import { ProductListServerWrapper } from "@/components/ProductListServerWrapper";
+
 
 type SearchParams = { [key: string]: string | string[] | undefined };
   const pageSize = 3;
-  async function Products({page} :{page :number})
-  {
-
-
-      const skip = (page - 1) * pageSize;
-
-      //Fetch products 
-      const products = await  prisma.product.findMany({
-            skip,
-            take :pageSize,
-          });
-     
-await sleep(1000); //simulate a delay for loading
-    return (
-          <> 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {products.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          </>
-    )
-  }
+   
 
 
 export default async function HomePage(props: {searchParams :SearchParams}) {
   const searchParams =await props.searchParams;
   const page = Number(searchParams.page) || 1 ;
+
 
 
   const total = await prisma.product.count();
@@ -51,10 +32,16 @@ export default async function HomePage(props: {searchParams :SearchParams}) {
   return (
     <>
       {/* PAGE CONTENT */}
-      <main className="container mx-auto px-5 pt-30 pb-8">
+      <main className=" container mx-auto py-4   ">
+          <Breadcrumbs
+          items={[
+            { label: "Products", href: "/" }
+          ]}
+          />
+
      
     <Suspense key ={page} fallback={<ProductsSkeleton/>}>
-      <Products page={page} />
+      < ProductListServerWrapper params={{page,pageSize}}/>
     </Suspense>
 
         <Pagination className="mt-8">
@@ -66,13 +53,13 @@ export default async function HomePage(props: {searchParams :SearchParams}) {
 
 
             {/* DYNAMIC  page number like  after  next page it show that hightlight  page number */}
-            {Array.from({ length: totalPages }, (_, i) => (
-            <PaginationItem key={i}>
+            {Array.from({ length: totalPages }, (_, index) => (
+            <PaginationItem key={index}>
               <PaginationLink
-                href={`?page=${i + 1}`}
-                className={page === i + 1 ? "font-bold underline" : ""}
+                href={`?page=${index + 1}`}
+                isActive={page===index+1}
               >
-                {i + 1}
+                {index + 1}
               </PaginationLink>
             </PaginationItem>
           ))}

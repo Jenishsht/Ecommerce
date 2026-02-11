@@ -217,7 +217,7 @@ body {
 /* Halloween theme */
 .theme-halloween {
   --background: #1a1a1a;
-  --foreground: #f97316;
+  --foreground: #f5f3f1;
   --primary: #f97316;
   --primary-foreground: #000;
   --header-gradient: linear-gradient(to right, #f97316, #ff6a00);
