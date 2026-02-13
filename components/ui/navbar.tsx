@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { ModeToggle } from "../theme-toggle";
-import { Button } from "./button";
-import {  ShoppingCart } from "lucide-react";
 import { MobileNav } from "../mobile-nav";
 import { SearchInput } from "../search-input";
+import { CartIndicator } from "../cart-indicator";
+import { Suspense } from "react";
+import { CartIndicatorSkeleton } from "../cart-indicator-skeleton";
 
 
 
@@ -60,11 +61,10 @@ export function Navbar(){
 
              <div className="ml-auto flex items-center gap-4">
              
-                <Button variant="ghost" size="icon" asChild>
-                    <Link href="/card">
-                    <ShoppingCart className="h-5 w-5"/>
-                    </Link>
-                </Button>
+              <Suspense fallback={<CartIndicatorSkeleton/>}>
+                <CartIndicator/>
+              </Suspense>
+
                  <ModeToggle/>
             </div>
         </div>

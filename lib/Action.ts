@@ -5,7 +5,7 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "./prisma";
 import { ShoppingCart } from "lucide-react";
 import { cookies } from "next/dist/server/request/cookies";
-
+import { revalidateTag, unstable_cache } from "next/cache";
 
     export interface GetproductsParams{
         query?:string;
@@ -72,41 +72,163 @@ import { cookies } from "next/dist/server/request/cookies";
         return product;
 
     }
-export type CartWithProducts = Prisma.CartGetPayload<{
-    include : {items :{include : {product: true}}};
-}>;
+    export type CartWithProducts = Prisma.CartGetPayload<{
+        include : {items :{include : {product: true}}};
+    }>;
 
-export type ShoppingCart =CartWithProducts & {
-    size:     number;
-    subtotal: number;
-};
-
-export async function getCart(): Promise<ShoppingCart | null>{
-    const cardId = (await cookies()).get("cardId")?.value;
-
-    const cart = cardId
-    ? await prisma.cart.findUnique({
-        where: {id:cardId},
-        include: {
-            items: {
-                include:{
-                    product: true,
-                },
-            },
-            
-
-        },
-    })
-    :null;
-    if(!cart){
-        return null;
-    }
-    return {
-        ...cart,
-        size: cart.items.length,
-        subtotal: cart.items.reduce(
-            (total,item)=> total + item.product.price * item.quantity,
-            0
-        )
+    export type ShoppingCart =CartWithProducts & {
+        size:     number;
+        subtotal: number;
     };
-}
+
+
+    export type CartItemWithProduct= Prisma.CartItemGetPayload<{
+        include: {
+            product: true
+        };
+    }>
+
+
+    async function findCartFromCookie(): Promise<CartWithProducts | null>{
+
+        const cartId =(await cookies()).get("cartId")?.value;
+        if(!cartId){
+            return null;
+        }
+        
+        return unstable_cache(async (id: string)=>
+            {
+                return await prisma.cart.findUnique({
+                    where :{id},
+                    include:{
+                        items:{
+                            include:{
+                                product: true,
+                            }
+                        }
+                    }
+                }); 
+
+            },[`cart-${cartId}`],
+            {tags: [`cart-${cartId}`]}
+        )(cartId);
+
+    }
+
+
+
+    export async function getCart(): Promise<ShoppingCart | null>{
+        const cartId = (await cookies()).get("cartId")?.value;
+
+        const cart = await  findCartFromCookie();
+
+        if(!cart){
+            return null;
+        }
+
+        return {
+            ...cart,
+            size: cart.items.length,
+            subtotal: cart.items.reduce(
+                (total,item)=> total + item.product.price * item.quantity,
+                0
+            )
+        };
+    }
+
+
+    async function getOrCreateCart(): Promise<CartWithProducts>{  //get existing cart for user or create new one
+    let cart =await findCartFromCookie();        //try to find exixting cart using a cookies
+    if(cart){
+        return cart;
+    }
+        cart= await prisma.cart.create({       //create new if doesnot exist
+            data: {},
+            include:{items:{ include:{product:true}}},
+        });
+        ((await cookies()).set("cartId",cart.id,{
+            httpOnly:true,
+            secure:process.env.NODE_ENV ==='production',
+            sameSite: "lax",
+        }))
+
+        return cart;
+    }
+
+    export async function addToCart(productId: string, quantity: number =1){
+        if(quantity <1){
+            throw new Error("Quantity must be at least 1");
+        }
+        
+        const cart = await getOrCreateCart();
+        const  existingItem = cart.items.find((item)=> item.productId ===productId);
+
+
+        if(existingItem){
+            await prisma.cartItem.update({
+                where: {id: existingItem.id},
+                data: {quantity: existingItem.quantity + quantity},
+            });
+        }else{
+            await prisma.cartItem.create({
+                data: {
+                    cartId: cart.id,
+                    productId,
+                    quantity,
+                }
+            })
+        }
+        revalidateTag(`cart-${cart.id}`,"default");
+    }
+
+
+    export async function setProductQuantity(
+        productId: string,
+        quantity: number
+    ){
+        if(quantity < 0){
+            throw new Error("Quantity must be at least 1");
+        }
+
+        const cart = await findCartFromCookie();
+
+        if(!cart){
+            throw new Error("cart not found");
+        }
+
+        //todo: make sure the product inventory is not execeeds
+        
+        try{
+            if(quantity === 0 ){
+                await prisma.cartItem.deleteMany({
+                    where:{
+                        cartId: cart.id,
+                        productId,
+                    },
+                    
+                });
+              
+
+            }else{
+                await prisma.cartItem.updateMany({
+                    where:{
+                        cartId: cart.id,
+                        productId,
+                    },
+                    data:{
+                        quantity,
+                    },
+                })
+              
+
+            }
+            revalidateTag(`cart-${cart.id}`,"default");
+              
+        } catch(error){
+            console.error("Error updating cart item quantity:",error);
+            throw new Error("Failed to update cart item quantity");
+        }
+       
+
+        
+    } 
