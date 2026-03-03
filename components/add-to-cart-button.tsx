@@ -32,7 +32,7 @@ import { addToCart } from "@/lib/Action";
     return (  
         <Button
                 onClick={handleAddToCart}
-                disabled={product.inventory === 0}
+                disabled={product.inventory === 0 || isadding}
                 className="w-full flex items-center justify-center gap-x-2"
                 >
                   <ShoppingCart className="w-4 h-4" />

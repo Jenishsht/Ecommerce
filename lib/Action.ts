@@ -5,7 +5,7 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "./prisma";
 import { ShoppingCart } from "lucide-react";
 import { cookies } from "next/dist/server/request/cookies";
-import { revalidateTag, unstable_cache } from "next/cache";
+import { unstable_cache, updateTag } from "next/cache";
 
     export interface GetproductsParams{
         query?:string;
@@ -118,7 +118,7 @@ import { revalidateTag, unstable_cache } from "next/cache";
 
 
     export async function getCart(): Promise<ShoppingCart | null>{
-        const cartId = (await cookies()).get("cartId")?.value;
+       // const cartId = (await cookies()).get("cartId")?.value;
 
         const cart = await  findCartFromCookie();
 
@@ -156,7 +156,7 @@ import { revalidateTag, unstable_cache } from "next/cache";
     }
 
     export async function addToCart(productId: string, quantity: number =1){
-        if(quantity <1){
+        if(quantity < 1){
             throw new Error("Quantity must be at least 1");
         }
         
@@ -178,7 +178,7 @@ import { revalidateTag, unstable_cache } from "next/cache";
                 }
             })
         }
-        revalidateTag(`cart-${cart.id}`,"default");
+          updateTag(`cart-${cart.id}`);
     }
 
 
@@ -222,7 +222,7 @@ import { revalidateTag, unstable_cache } from "next/cache";
               
 
             }
-            revalidateTag(`cart-${cart.id}`,"default");
+             updateTag(`cart-${cart.id}`);
               
         } catch(error){
             console.error("Error updating cart item quantity:",error);
