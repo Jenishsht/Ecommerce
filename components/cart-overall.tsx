@@ -1,29 +1,30 @@
 "use client";
 
-import { getCart } from "@/lib/Action";
+import { CartItemWithProduct, getCart } from "@/lib/Action";
 import { FormatPrice } from "@/lib/utils";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
-export default function CartOverall() {
-  const [cart, setCart] = useState<any>(null); 
+interface CartOverallProps {
+  cart: { items: CartItemWithProduct[] };
+}
+
+
+export default function CartOverall({ cart }: CartOverallProps) {
+
   const [voucher, setVoucher] = useState("");  
   const [discount, setDiscount] = useState(0); 
   const [voucherMessage, setVoucherMessage] = useState("");
 
-  // fetch cart on mount
-  useEffect(() => {
-    async function fetchCart() {
-      const c = await getCart();
-      setCart(c);
-    }
-    fetchCart();
-  }, []);
+
 
   if (!cart) return null;
 
-  const subtotal = cart.subtotal;
+  const subtotal = cart.items.reduce(
+    (acc, item) => acc + item.product.price * item.quantity,
+    0
+  );
   const taxes = 0;
   const shipping = 0;
 
@@ -92,16 +93,16 @@ const handleApplyVoucher = () => {
     </button>
   </div>
   
-  {voucherMessage && (
-    <p
-      className={`text-sm ${
-        discount > 0 ? "text-green-600" : "text-red-500"
-      }`}
-    >
-      {voucherMessage}
-    </p>
-  )}
-</div>
+      {voucherMessage && (
+        <p
+          className={`text-sm ${
+            discount > 0 ? "text-green-600" : "text-red-500"
+          }`}
+        >
+          {voucherMessage}
+        </p>
+      )}
+    </div>
 
         {/* Total */}
         <div className="flex justify-between items-center border-t pt-2 text-base font-semibold">
