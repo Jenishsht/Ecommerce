@@ -5,17 +5,23 @@ import CartEntry from "@/components/cart-entry";
 import CartOverall from "@/components/cart-overall";
 import { getCart, CartItemWithProduct } from "@/lib/Action";
 
+import { sleep } from "@/lib/utils";
+import Loading from "./loading";
+
 export default function CartPage() {
   const [cart, setCart] = useState<{ items: CartItemWithProduct[] } | null>(null);
-
-  const fetchCart = async () => {
-    const data = await getCart();
-    setCart(data);
-  };
-
+const [loading, setLoading] = useState(true);
   useEffect(() => {
+    const fetchCart = async () => {
+      setLoading(true);
+      await sleep(1000); // simulate network delay
+      const data = await getCart();
+      setCart(data);
+      setLoading(false);
+    };
     fetchCart();
   }, []);
+
 
   const updateCartItem = (cartItemId: string, quantity: number) => {
     if (!cart) return;
@@ -24,6 +30,9 @@ export default function CartPage() {
       .filter(item => item.quantity > 0);
     setCart({ items: updatedItems });
   };
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <main className="container mx-auto py-4">
