@@ -13,6 +13,7 @@ import ProductsSkeleton from "./ProductsSkeleton";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { ProductListServerWrapper } from "@/components/ProductListServerWrapper";
+import { stripe } from "@/lib/stripe";
 
 
 type SearchParams = { [key: string]: string | string[] | undefined };
@@ -28,6 +29,8 @@ export default async function HomePage(props: {searchParams :SearchParams}) {
 
   const total = await prisma.product.count();
   const totalPages = Math.ceil(total/pageSize);
+
+
 
   return (
     <>

@@ -53,7 +53,7 @@ const [loading, setLoading] = useState(true);
             ))}
           </div>
           <div className="w-full lg:w-96 flex-shrink-0">
-            {/* Pass cart to CartOverall */}
+           
             <CartOverall cart={cart}  />
           </div>
         </div>
