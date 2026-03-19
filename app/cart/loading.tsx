@@ -28,7 +28,7 @@ export default function Loading() {
         ))}
       </div>
 
-     =
+     
       <div className="w-full lg:w-96 flex-shrink-0">
         <div className="space-y-3 p-6 border rounded-lg shadow-md">
          

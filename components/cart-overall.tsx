@@ -1,13 +1,12 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
 import { CartItemWithProduct } from "@/lib/Action";
 import { FormatPrice } from "@/lib/utils";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import toast from "react-hot-toast";
-
-
 
 interface CartOverallProps {
   cart: { items: CartItemWithProduct[] };
@@ -17,7 +16,7 @@ export default function CartOverall({ cart }: CartOverallProps) {
   const [voucherInput, setVoucherInput] = useState("");
   const [appliedVoucher, setAppliedVoucher] = useState(""); // the code applied
   const [discount, setDiscount] = useState(0);
-
+  const [shippingCost, setShippingCost] = useState(0); 
 
   if (!cart) return null;
 
@@ -25,53 +24,83 @@ export default function CartOverall({ cart }: CartOverallProps) {
     (acc, item) => acc + item.product.price * item.quantity,
     0
   );
-  const taxes = 0;
-  const shipping = 0;
-  const total = subtotal + taxes + shipping - discount;
+
+  const taxes = 0; 
+
   const AVAILABLE_VOUCHERS = [
-  {
-    code: "SAVE10",
-    title: "10% OFF",
-    description: "Save 10% on your order",
-  },
-  {
-    code: "SAVE20",
-    title: "20% OFF",
-    description: "Save 20% on orders above 2000",
-  },
-  {
-    code: "FREESHIP",
-    title: "Free Shipping",
-    description: "Free delivery on this order",
-  },
-];
+    { code: "SAVE10", title: "10% OFF", description: "Save 10% on your order" },
+    { code: "SAVE20", title: "20% OFF", description: "Save 20% on orders above 2000" },
+    { code: "FREESHIP", title: "Free Shipping", description: "Free delivery on this order" },
+  ];
 
+  // Calculate total dynamically
+  const total = useMemo(() => {
+    return subtotal + taxes + shippingCost - discount;
+  }, [subtotal, taxes, shippingCost, discount]);
 
- const handleApplyVoucher = () => {
-    const code = voucherInput.trim().toLowerCase();
+  const handleApplyVoucher = () => {
+    const code = voucherInput.trim().toUpperCase();
+    const voucher = AVAILABLE_VOUCHERS.find(v => v.code === code);
 
-    if (code === "save10") {
-      const newDiscount = subtotal * 0.1;
-      setDiscount(newDiscount);
-      setAppliedVoucher(code);
-      toast.success(`Voucher applied! You saved ${FormatPrice(newDiscount)}`);
-    } else if (code === "") {
-      toast('Please enter a voucher code.', { icon: '⚠️' });
+    if (!voucherInput) {
+      toast("Please enter a voucher code.", { icon: "⚠️" });
       setDiscount(0);
       setAppliedVoucher("");
-    } else {
+      setShippingCost(0);
+      return;
+    }
+
+    if (!voucher) {
       toast.error("Invalid voucher code.");
       setDiscount(0);
       setAppliedVoucher("");
+      setShippingCost(0);
+      return;
     }
+
+    let newDiscount = 0;
+    let newShippingCost = shippingCost;
+
+    switch (voucher.code) {
+      case "SAVE10":
+        newDiscount = subtotal * 0.1;
+        toast.success(`Voucher applied! You saved ${FormatPrice(newDiscount)} 🎉`);
+        break;
+
+      case "SAVE20":
+        if (subtotal >= 2000) {
+          newDiscount = subtotal * 0.2;
+          toast.success(`Voucher applied! You saved ${FormatPrice(newDiscount)} 🎉`);
+        } else {
+          toast.error("SAVE20 applies only on orders above 2000.");
+          setDiscount(0);
+          setAppliedVoucher("");
+          setShippingCost(0);
+          return;
+        }
+        break;
+
+      case "FREESHIP":
+        newShippingCost = 0; 
+        toast.success("Free shipping applied! 🚚");
+        break;
+
+      default:
+        toast.error("Voucher not recognized.");
+        return;
+    }
+
+    setDiscount(newDiscount);
+    setShippingCost(newShippingCost);
+    setAppliedVoucher(voucher.code);
   };
 
-
+  // Reset discount if user changes the voucher input manually
   useEffect(() => {
-    if (appliedVoucher && voucherInput.trim().toLowerCase() !== appliedVoucher) {
+    if (appliedVoucher && voucherInput.trim().toUpperCase() !== appliedVoucher) {
       setDiscount(0);
       setAppliedVoucher(""); 
-      
+      setShippingCost(0);
     }
   }, [voucherInput, appliedVoucher]);
 
@@ -123,32 +152,23 @@ export default function CartOverall({ cart }: CartOverallProps) {
               Apply
             </button>
           </div>
-          
 
           <div className="space-y-2 mt-2">
-  <p className="text-sm font-medium text-primary">Available Vouchers</p>
-
-  {AVAILABLE_VOUCHERS.map((voucher) => (
-    <div
-      key={voucher.code}
-      onClick={() => setVoucherInput(voucher.code.toLowerCase())}
-      className="border rounded-md p-3 flex justify-between items-center cursor-pointer hover:bg-gray-50"
-    >
-      <div>
-        <p className="text-sm font-semibold text-primary">
-          {voucher.title}
-        </p>
-        <p className="text-xs text-muted-foreground">
-          {voucher.description}
-        </p>
-      </div>
-
-      <span className="text-xs font-semibold text-primary">
-        {voucher.code}
-      </span>
-    </div>
-  ))}
-</div>
+            <p className="text-sm font-medium text-primary">Available Vouchers</p>
+            {AVAILABLE_VOUCHERS.map((voucher) => (
+              <div
+                key={voucher.code}
+                onClick={() => setVoucherInput(voucher.code)}
+                className="border rounded-md p-3 flex justify-between items-center cursor-pointer hover:bg-gray-50"
+              >
+                <div>
+                  <p className="text-sm font-semibold text-primary">{voucher.title}</p>
+                  <p className="text-xs text-muted-foreground">{voucher.description}</p>
+                </div>
+                <span className="text-xs font-semibold text-primary">{voucher.code}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Total */}
