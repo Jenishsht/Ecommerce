@@ -55,6 +55,10 @@ const [loading, setLoading] = useState(true);
           <div className="w-full lg:w-96 flex-shrink-0">
            
             <CartOverall cart={cart}  />
+            {/* <Button size="lg" asChild className="mt-4 w-full">
+              <Link href="/checkout">Proceed to Checkout</Link>
+
+            </Button> */}
           </div>
         </div>
       )}

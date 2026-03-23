@@ -3,6 +3,7 @@
 import { cookies } from "next/headers";
 import { getCart } from "./Action";
 import { prisma } from "./prisma";
+import { createCheckOutSession } from "./stripe";
 
 export async function processCheckout() {
     const cart= await getCart();
@@ -10,6 +11,10 @@ export async function processCheckout() {
     if(!cart || cart.items.length===0){
         throw new Error("Cart is empty");
     }
+
+    let orderId: string| null =null;
+
+
     
     try{
         const order =await prisma.$transaction(async(tx)=>{
@@ -44,10 +49,74 @@ export async function processCheckout() {
         return newOrder;
         });
 
+        orderId=order.id
+
+        //1. reload full order
+
+        const fullOrder = await prisma.order.findUnique({
+             where :{
+                id: order.id,
+
+             },
+             include :{
+                items:{
+                    include:{
+                        product:true,
+                    }
+                }
+
+             }
+        });
+        //2. conform the order was loaded
+
+         if(!fullOrder){
+            throw new Error("Order not found");
+         }
+         //3. create the stripe session
+         const {sessionId,sessionUrl}= await createCheckOutSession(fullOrder);
+
+         //4. return the sessssion url and handdle teh error
+         if(!sessionId || !sessionUrl){
+            throw new Error("Failed tp create Stripe session");
+         }
+         //5. store the session id in the order and change the order status
+
+         await prisma.order.update({
+            where :{
+                id: fullOrder.id,
+    
+            },
+            data:{
+                stripeSessionID :sessionId,
+                status: "pending_payment",
+            }
+         });
+        
+
+
         (await cookies()).delete("cartId");
-        return order;
+        return {
+            sessionUrl,
+            order: fullOrder,
+        };
         }catch(error){ 
+
+            //1.change order status to failed
+            if(orderId && error instanceof Error && error.message.includes("Stripe")){
+                
+                await prisma.order.update({
+                    where: {
+                        id: orderId,
+                    },
+                    data:{
+                        status:"failed",
+                    }
+                });
+            }
+
+            
             console.error("Error creating oder:",error);
+            throw new Error("Failed to create order");
 
     }
 }

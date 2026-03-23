@@ -95,3 +95,10 @@ model OrderItem {
 
 
 }
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PAID
+  COMPLETED
+  DELIVERY
+}

@@ -50,9 +50,10 @@ export async function  createCheckOutSession(order: OrderWithItemsAndProduct){
 
 
   });
-  const successUrl = `${process.env.NEXT_PUBLIC_URL}/order/success?session_id={CHECKOUT_SESSION_ID}`;
-  const cancelUrl = `${process.env.NEXT_PUBLIC_URL}/cart?cancel=true`;
-    try {
+  const successUrl = `${process.env.NEXT_PUBLIC_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`;
+  const cancelUrl = `${process.env.NEXT_PUBLIC_URL}/checkout/cancel?session_id={CHECKOUT_SESSION_ID}`;
+
+  try {
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
     line_items,

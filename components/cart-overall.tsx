@@ -4,12 +4,29 @@
 import { CartItemWithProduct } from "@/lib/Action";
 import { FormatPrice } from "@/lib/utils";
 import { Button } from "./ui/button";
-import Link from "next/link";
 import { useState, useEffect, useMemo } from "react";
 import toast from "react-hot-toast";
+import { processCheckout } from "@/lib/order";
+import { OrderWithItemsAndProduct } from "@/lib/stripe";
 
 interface CartOverallProps {
   cart: { items: CartItemWithProduct[] };
+}
+export type processCheckoutResponse = {
+  sessionUrl : string,
+  order:  OrderWithItemsAndProduct
+};
+const handleCheckout = async ()=>{
+let result : processCheckoutResponse|null =null;
+  try{
+    result = await processCheckout();
+  }catch(error){
+    console.error("Checkout error:",error);
+
+  }
+  if(result){
+    window.location.href = result.sessionUrl;
+  }
 }
 
 export default function CartOverall({ cart }: CartOverallProps) {
@@ -176,10 +193,11 @@ export default function CartOverall({ cart }: CartOverallProps) {
           <span className="text-primary">Total</span>
           <span className="text-primary">{FormatPrice(total)}</span>
         </div>
-
-        <Button size="lg" asChild className="w-full mt-2">
-          <Link href="/checkout">Proceed to Checkout</Link>
-        </Button>
+          <form action={handleCheckout}>
+            <Button size="lg"  className="w-full mt-2">
+                    Proceed to Checkout
+            </Button>
+        </form>
       </div>
     </div>
   );
