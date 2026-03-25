@@ -37,6 +37,7 @@ export async function GET(request: NextRequest) {
          
         },
       });
+
     }else{
         notFound();
 

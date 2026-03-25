@@ -30,6 +30,7 @@ export async function POST(request: NextRequest){
                 });
 
         }
+        
 
 
         //handle the checkout session completion
@@ -45,6 +46,7 @@ export async function POST(request: NextRequest){
                 stripePaymentIntentId: session.payment_intent as string,
             }
         });
+        
           return NextResponse.json({received:true},{status: 200});
  
       

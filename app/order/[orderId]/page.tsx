@@ -2,7 +2,7 @@
 import { prisma } from "@/lib/prisma";
 import { OrderStatus } from "@prisma/client";
 import { notFound } from "next/navigation";
-import { CheckCircle, Clock, CreditCard, XCircle } from "lucide-react";
+import { CheckCircle, Clock, Truck } from "lucide-react";
 
 
 interface OrderPageProps {
@@ -41,7 +41,7 @@ const getStatusDetails = (status: OrderStatus) => {
       return {
         label: "Out for Delivery",
         variant: "warning",
-        icon: <Clock className="w-4 h-4 inline mr-1" />,
+        icon: <Truck className="w-4 h-4 inline mr-1" />,
       };
     default:
       return {

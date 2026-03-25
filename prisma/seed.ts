@@ -2,13 +2,20 @@
 import 'dotenv/config';  //toensure the.env file is import 
 // import { PrismaClient } from '../app/generated/prisma/client'; 
 // import { Product } from '@prisma/client';
-import { PrismaClient, Product } from '@prisma/client';
+import { PrismaClient, Product, User } from '@prisma/client';
+import { hashPassword } from '@/lib/auth';
+
 
 const prisma = new PrismaClient();
 
 async function main() {
+    await prisma.orderItem.deleteMany();
+  await prisma.order.deleteMany();
+
     await prisma.product.deleteMany();
     await prisma.catagory.deleteMany();
+    await prisma.user.deleteMany();
+
 
     const  electronics =await prisma.catagory.create({    // used to create row 
       data: {
@@ -104,6 +111,37 @@ async function main() {
         
       })
     }
+
+    const users: User[]=[
+      {
+        id: "1",
+        email:  "admin@gmail.com",
+        password: "password123",
+        name:"Admin User",
+        role: "ADMIN",
+        createdAt:new Date(),
+        updatedAt: new Date(),
+      },
+        {
+        id: "2",
+        email:  "user@gmail.com",
+        password: "password456",
+        name:"Regular User",
+        role: "USER",
+        createdAt:new Date(),
+        updatedAt: new Date(),
+      },
+    ];
+    for(const user of users){
+      const hashedPassword = await hashPassword(user.password);
+      await prisma.user.create({
+        data:{
+          ...user,
+          password:hashedPassword,
+        }
+      })
+    }
+    console.log("Users created");
 }
 
 main()
