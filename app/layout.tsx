@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import { Navbar } from "@/components/ui/navbar";
 import { Toaster } from "react-hot-toast";
+import { SessionProvider } from "next-auth/react";
 
 
 const geistSans = Geist({
@@ -78,6 +79,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <SessionProvider>
         <ThemeProvider 
              attribute="class"
             defaultTheme="system"
@@ -99,6 +101,7 @@ export default function RootLayout({
 
           </footer>
         </ThemeProvider>
+        </SessionProvider>
       </body>
     </html>
   );
