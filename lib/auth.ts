@@ -2,7 +2,7 @@
 import NextAuth, { User, Session } from "next-auth"
 import bcrypt from "bcryptjs";
 import Credentials from"next-auth/providers/credentials";
-import { LoginSchema } from "./schemas";
+import { LoginSchema, } from "./schemas";
 import { prisma } from "./prisma";
 
 import type { JWT, JWT as NextAuthJWT } from "next-auth/jwt";
@@ -65,7 +65,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             password,
             user.password
           )
-          if(!password){
+          if(!passwordsMatch){
             console.log("Password does not match");
             return null;
           }

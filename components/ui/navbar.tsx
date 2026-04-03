@@ -5,6 +5,7 @@ import { SearchInput } from "../search-input";
 import { CartIndicator } from "../cart-indicator";
 import { Suspense } from "react";
 import { CartIndicatorSkeleton } from "../cart-indicator-skeleton";
+import AuthStatus from "../auth-status";
 
 
 
@@ -60,7 +61,7 @@ export function Navbar(){
             </div>
 
              <div className="ml-auto flex items-center gap-4">
-             
+             <AuthStatus/>
               <Suspense fallback={<CartIndicatorSkeleton/>}>
                 <CartIndicator/>
               </Suspense>
