@@ -122,15 +122,16 @@ else{
           <div className="text-center text-sm text-muted-foreground">Or, login with</div>
 
           <div className="flex justify-center gap-4">
-            <button className="flex items-center gap-1 text-sm text-muted-foreground hover:text-black transition">
+       <button onClick={() => signIn("google",{callbackUrl:"/"})} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-black transition">
               <Image src="/goggle.svg" alt="Google" width={18} height={18} />
               Google
             </button>
 
-            <button className="flex items-center gap-1 text-sm text-muted-foreground hover:text-black transition">
+
+            {/* <button className="flex items-center gap-1 text-sm text-muted-foreground hover:text-black transition">
               <Image src="/facebook.svg" alt="Facebook" width={19} height={19} />
               Facebook
-            </button>
+            </button> */}
           </div>
         </CardContent>
 

@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import Credentials from"next-auth/providers/credentials";
 import { LoginSchema, } from "./schemas";
 import { prisma } from "./prisma";
-
+import GoogleProvider from "next-auth/providers/google";
 import type { JWT, JWT as NextAuthJWT } from "next-auth/jwt";
 
 declare module "next-auth"{
@@ -81,10 +81,35 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
 
       },
-    })
+    }),
+      GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
   ],
 
   callbacks:{ 
+     async signIn({ user, account, profile, email, credentials }) {
+      if (account?.provider === "google") {
+        // Check if user exists
+        const existingUser = await prisma.user.findUnique({
+          where: { email: user.email! },
+        });
+
+        if (!existingUser) {
+          // If not, create a new user in database
+          await prisma.user.create({
+            data: {
+              name: user.name || "No Name",
+              email: user.email!,
+              password: "", // Google login doesn't have password
+              role: "USER", // default role
+            },
+          });
+        }
+      }
+      return true; // allow login
+    },
       async jwt({ token, user }: { token:JWT; user:User}) {
         if(user){
           token.id=user.id;
@@ -104,6 +129,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   pages:{
     signIn:"/auth/signin",
   }
+
 });
 
 
