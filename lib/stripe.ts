@@ -1,6 +1,4 @@
 import { Prisma } from "@prisma/client";
-import { Item } from "@radix-ui/react-dropdown-menu";
-import { Currency } from "lucide-react";
 import Stripe from "stripe";
 
 if (!process.env.STRIPE_SECRET_KEY) {
@@ -22,7 +20,8 @@ export type OrderWithItemsAndProduct = Prisma.OrderGetPayload<{
         product:true;
       }
        
-    }
+    },
+    user:true;
   }
 }>
 
@@ -42,7 +41,7 @@ export async function  createCheckOutSession(order: OrderWithItemsAndProduct){
           description: item.product.description ??  "",
           images: [item.product.image ?? ""],
         },
-        unit_amount: item.product.price *100,
+        unit_amount: Math.round(item.product.price * 100),
       },
       quantity: item.quantity,
 
@@ -58,11 +57,14 @@ export async function  createCheckOutSession(order: OrderWithItemsAndProduct){
     mode: "payment",
     line_items,
     success_url: successUrl,  
-    cancel_url: cancelUrl,    
+    cancel_url: cancelUrl,   
+    customer_email: order.user?.email?? undefined,
     metadata: {
       orderId: order.id.toString(),
+      ...(order.userId && {userId: order.userId}),
     },
   });
+  
 
   return {sessionId: session.id, sessionUrl:session.url };
 } catch (error) {

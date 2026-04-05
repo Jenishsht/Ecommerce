@@ -3,10 +3,21 @@
 import { cookies } from "next/headers";
 import { getCart } from "./Action";
 import { prisma } from "./prisma";
-import { createCheckOutSession } from "./stripe";
+import { createCheckOutSession, OrderWithItemsAndProduct } from "./stripe";
+import { auth } from "./auth";
 
-export async function processCheckout() {
+export type processCheckoutResponse ={
+    sessionUrl: string;
+    order:  OrderWithItemsAndProduct;
+}
+
+export async function processCheckout():Promise<processCheckoutResponse> {
     const cart= await getCart();
+    const session = await auth();
+    const userId = session?.user?.id;
+    
+
+
 
     if(!cart || cart.items.length===0){
         throw new Error("Cart is empty");
@@ -22,6 +33,7 @@ export async function processCheckout() {
             const newOrder =await tx.order.create({
                 data:{
                     total,
+                               ...(userId ? { userId } : {}), 
                 }
             });
         const  orderItem =cart.items.map((item)=>({
@@ -63,7 +75,8 @@ export async function processCheckout() {
                     include:{
                         product:true,
                     }
-                }
+                },
+                user:true
 
              }
         });
