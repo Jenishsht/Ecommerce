@@ -26,10 +26,10 @@ model Product {
   catagory      Catagory @relation(fields: [catagoryId],references: [id])
   catagoryId    String
   inventory     Int   @default(0)
+  deleted   Boolean @default(false)
   cartItem      CartItem[]
   OrderItems    OrderItem[]
-
-
+  
 
 
 }
