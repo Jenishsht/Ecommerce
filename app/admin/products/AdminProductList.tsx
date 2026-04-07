@@ -87,7 +87,7 @@ export default function AdminProductList({ onEdit }: Props) {
     }
   };
 
-  // Render
+
   return (
     <>
       {loading ? (
@@ -105,9 +105,12 @@ export default function AdminProductList({ onEdit }: Props) {
                 className="h-48 w-full object-cover rounded-t-lg bg-gray-100"
               />
 
-              <div className="p-4 flex flex-col flex-1">
-                <h2 className="text-lg font-semibold">{p.name}</h2>
-                <p className="text-gray-700 mt-1">${p.price.toFixed(2)}</p>
+              <div className="p-4 flex flex-col flex-1 ">
+                  <div className="flex justify-between items-center">
+                    
+                    <h2 className="text-lg font-semibold text-black">{p.name}</h2>
+                    <p className="text-black text-base font-medium">${p.price.toFixed(2)}</p>
+                  </div>
 
                 <Badge
                   variant={p.inventory <= 0 ? "destructive" : "default"}
@@ -118,7 +121,7 @@ export default function AdminProductList({ onEdit }: Props) {
                   {p.inventory <= 0 ? "Out of stock" : `${p.inventory} in stock`}
                 </Badge>
 
-                <Badge variant="outline" className="mt-2">
+                <Badge variant="outline" className="mt-2 text-black">
                   {categoriesMap[p.catagoryId] || "N/A"}
                 </Badge>
 

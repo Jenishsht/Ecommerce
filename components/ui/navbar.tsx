@@ -3,11 +3,12 @@ import Link from "next/link";
 import { ModeToggle } from "../theme-toggle";
 import { MobileNav } from "../mobile-nav";
 import { SearchInput } from "../search-input";
-import { CartIndicator } from "../cart-indicator";
+import  CartIndicator  from "../cart-indicator";
 import { Suspense } from "react";
 import { CartIndicatorSkeleton } from "../cart-indicator-skeleton";
 import AuthStatus from "../auth-status";
-import { useSession } from "next-auth/react";
+import AdminButton from "../AdminButton";
+
 
 
 
@@ -19,7 +20,7 @@ export const catagories =[
 ]
 
 export function Navbar(){
-    const { data: session } = useSession(); 
+
      return (
      
       <div className="flex items-center gap-6 px-10  py-3 border-b mx-auto max-w-7xl text-white">
@@ -64,15 +65,8 @@ export function Navbar(){
             </div>
 
              <div className="ml-auto flex items-center gap-4">
-              {session?.user?.role === "ADMIN" && (
-          <Link
-            href="/admin/products"
-            className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md font-semibold shadow"
-          >
-            Admin Panel
-          </Link>
-        )}
-
+          
+              <AdminButton />
              <AuthStatus/>
               <Suspense fallback={<CartIndicatorSkeleton/>}>
                 <CartIndicator/>

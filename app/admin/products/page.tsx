@@ -23,7 +23,7 @@ export default function AdminProductsPage() {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6">Admin Panel - Products</h1>
+      <h1 className="text-3xl text-black font-bold mb-6">Admin Panel - Products</h1>
 
       <button
         className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-md font-semibold shadow"
